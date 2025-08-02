@@ -20,10 +20,11 @@ python mock_service.py
 | GET   | /api/users/{id}           | Получить данные одного пользователя  |
 | POST  | /api/users                | Создать пользователя                 |
 
-📂 Структура проекта
-'''
-├─ reqres.py                   # Мок-сервис на FastAPI
-├─ test_users.py               # Тесты на requests + pytest
-├─ test_users_with_mock.py     # Тесты на requests + pytest (c мок сервисом)
+## 📂 Структура проекта
+
+```
+📂 reqres.py                  # Мок-сервис на FastAPI
+├─ test_users.py              # Тесты на requests + pytest
+├─ test_users_with_mock.py    # Тесты на requests + pytest (с мок сервисом)
 └─ README.md
-'''
+```
