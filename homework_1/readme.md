@@ -22,7 +22,7 @@ python mock_service.py
 
 📂 Структура проекта
 
-├─ reqres.py   # Мок-сервис на FastAPI
-├─ test_users.py  # Тесты на requests + pytest
-├─ test_users_with_mock.py  # Тесты на requests + pytest (c мок сервисом)
+├─ reqres.py                   # Мок-сервис на FastAPI
+├─ test_users.py               # Тесты на requests + pytest
+├─ test_users_with_mock.py     # Тесты на requests + pytest (c мок сервисом)
 └─ README.md
