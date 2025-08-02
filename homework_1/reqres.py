@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Query
+from datetime import datetime, timezone
 
 app = FastAPI()
 
@@ -63,34 +64,35 @@ def get_users(page: int = Query(1)):
     return {"page": page, "data": []}
 
 
-@app.get("/api/users/2")
-def get_user():
-    return {
-        "data": {
-            "id": 2,
-            "email": "janet.weaver@reqres.in",
-            "first_name": "Janet",
-            "last_name": "Weaver",
-            "avatar": "https://reqres.in/img/faces/2-image.jpg"
-        },
-        "support": {
-            "url": "https://contentcaddy.io?utm_source=reqres&utm_medium=json&utm_campaign=referral",
-            "text": "Tired of writing endless social media content? Let Content Caddy generate it for you."
+@app.get("/api/users/{user_id}")
+def get_user(user_id: int):
+    if user_id == 2:
+        return {
+            "data": {
+                "id": 2,
+                "email": "janet.weaver@reqres.in",
+                "first_name": "Janet",
+                "last_name": "Weaver",
+                "avatar": "https://reqres.in/img/faces/2-image.jpg"
+            },
+            "support": {
+                "url": "https://contentcaddy.io?utm_source=reqres&utm_medium=json&utm_campaign=referral",
+                "text": "Tired of writing endless social media content? Let Content Caddy generate it for you."
+            }
         }
-    }
+    return {"error": "User not found"}
 
 
 @app.post("/api/users")
-def create_user():
+def create_user(user: dict):
     return {
-        "name": "morpheus",
-        "job": "leader",
-        "id": "811",
-        "createdAt": "2025-08-02T12:24:49.027Z"
+        "name": user.get("name"),
+        "job": user.get("job"),
+        "id": 811,
+        "createdAt": datetime.now(timezone.utc).isoformat()
     }
 
 
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8000)
