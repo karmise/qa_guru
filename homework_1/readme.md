@@ -10,7 +10,7 @@
 pip install fastapi uvicorn requests pytest
 
 2️⃣ Запустите мок-сервис:
-python mock_service.py
+python reqres.py
 
 Сервис будет доступен на: http://0.0.0.0:8000
 🔹 Доступные эндпоинты
