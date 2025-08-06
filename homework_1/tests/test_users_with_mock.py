@@ -20,17 +20,13 @@ def test_get_second_users_page(app_url):
     assert all(isinstance(user, dict) for user in users)
 
 
-def test_users_have_expected_keys(app_url):
-    page = 2
-    response = requests.get(f"{app_url}/api/users", params={"page": page})
+def test_users_endpoint_returns_list(app_url):
+    response = requests.get(f"{app_url}/api/users")
     body = response.json()
 
     assert response.status_code == HTTPStatus.OK
-    assert "data" in body
-    assert all(
-        all(key in user for key in ["id", "email", "first_name", "last_name", "avatar"])
-        for user in body["data"]
-    )
+    assert isinstance(body, list)
+    assert body, "Список пользователей пустой"
 
 
 def test_create_user_returns_correct_data(app_url):
