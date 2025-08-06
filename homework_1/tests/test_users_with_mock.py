@@ -1,27 +1,33 @@
+from http import HTTPStatus
+
 import requests
 
-BASE_MOCK_URL = "http://0.0.0.0:8000/api"
+from homework_1.models.user import User
+
 headers = {"x-api-key": "reqres-free-v1"}
 
 
-def test_get_second_users_page():
+def test_get_second_users_page(app_url):
     page = 2
-    response = requests.get(f"{BASE_MOCK_URL}/users", params={"page": page})
+    response = requests.get(f"{app_url}/api/users", params={"page": page})
+    users = response.json()
+
+    for user in users:
+        User.model_validate(user)
+
+    assert response.status_code == HTTPStatus.OK
+    assert users.get("page") == page
+    assert "data" in users
+    assert isinstance(users["data"], list)
+    assert all(isinstance(user, dict) for user in users["data"])
+
+
+def test_users_have_expected_keys(app_url):
+    page = 2
+    response = requests.get(f"{app_url}/api/users", params={"page": page})
     body = response.json()
 
-    assert response.status_code == 200
-    assert body.get("page") == page
-    assert "data" in body
-    assert isinstance(body["data"], list)
-    assert all(isinstance(user, dict) for user in body["data"])
-
-
-def test_users_have_expected_keys():
-    page = 2
-    response = requests.get(f"{BASE_MOCK_URL}/users", params={"page": page})
-    body = response.json()
-
-    assert response.status_code == 200
+    assert response.status_code == HTTPStatus.OK
     assert "data" in body
     assert all(
         all(key in user for key in ["id", "email", "first_name", "last_name", "avatar"])
@@ -29,12 +35,12 @@ def test_users_have_expected_keys():
     )
 
 
-def test_create_user_returns_correct_data():
+def test_create_user_returns_correct_data(app_url):
     payload = {"name": "morpheus", "job": "leader"}
-    response = requests.post(f"{BASE_MOCK_URL}/users", json=payload, headers=headers)
+    response = requests.post(f"{app_url}/api/users", json=payload, headers=headers)
     body = response.json()
 
-    assert response.status_code == 200
+    assert response.status_code == HTTPStatus.OK
     for key, value in payload.items():
         assert body.get(key) == value
 
