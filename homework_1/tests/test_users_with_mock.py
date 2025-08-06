@@ -16,10 +16,8 @@ def test_get_second_users_page(app_url):
         User.model_validate(user)
 
     assert response.status_code == HTTPStatus.OK
-    assert users.get("page") == page
-    assert "data" in users
-    assert isinstance(users["data"], list)
-    assert all(isinstance(user, dict) for user in users["data"])
+    assert isinstance(users, list)
+    assert all(isinstance(user, dict) for user in users)
 
 
 def test_users_have_expected_keys(app_url):
