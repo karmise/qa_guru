@@ -5,9 +5,11 @@ from fastapi import FastAPI, HTTPException
 
 from homework_1.models.AppStatus import AppStatus
 from homework_1.models.user import User
+from fastapi_pagination import Page, add_pagination, paginate
+
 
 app = FastAPI()
-
+add_pagination(app)
 users: list[User] = []
 
 
@@ -23,9 +25,9 @@ def get_user(user_id: int) -> User:
     return users[user_id - 1]
 
 
-@app.get("/api/users", status_code=HTTPStatus.OK)
-def get_users() -> list[User]:
-    return users
+@app.get("/api/users", response_model=Page[User], status_code=HTTPStatus.OK)
+def get_users():
+    return paginate(users)
 
 
 if __name__ == "__main__":
