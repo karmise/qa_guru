@@ -1,14 +1,19 @@
 import json
 from http import HTTPStatus
 
-from fastapi import FastAPI, Query, HTTPException
-from datetime import datetime, timezone
+from fastapi import FastAPI, HTTPException
 
+from homework_1.models.AppStatus import AppStatus
 from homework_1.models.user import User
 
 app = FastAPI()
 
-users: list[User]
+users: list[User] = []
+
+
+@app.get("/status", status_code=HTTPStatus.OK)
+def status() -> AppStatus:
+    return AppStatus(users=bool(users))
 
 
 @app.get("/api/users/{user_id}", status_code=HTTPStatus.OK)
@@ -21,16 +26,6 @@ def get_user(user_id: int) -> User:
 @app.get("/api/users", status_code=HTTPStatus.OK)
 def get_users() -> list[User]:
     return users
-
-
-@app.post("/api/users")
-def create_user(user: dict):
-    return {
-        "name": user.get("name"),
-        "job": user.get("job"),
-        "id": 811,
-        "createdAt": datetime.now(timezone.utc).isoformat()
-    }
 
 
 if __name__ == "__main__":
