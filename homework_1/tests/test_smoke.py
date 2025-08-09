@@ -5,9 +5,9 @@ import requests
 
 def test_status_endpoint(app_url):
     response = requests.get(f"{app_url}/status")
+    assert response.status_code == HTTPStatus.OK
     body = response.json()
 
-    assert response.status_code == HTTPStatus.OK
     assert "users" in body
     assert isinstance(body["users"], bool)
 
