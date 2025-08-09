@@ -3,5 +3,6 @@ fastapi
 email-validator
 python-dotenv
 requests
-pydentic
+pydantic
 fastapi-pagination
+uvicorn
