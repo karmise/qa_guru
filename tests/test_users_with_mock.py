@@ -2,14 +2,18 @@ import json
 from http import HTTPStatus
 
 import pytest
+from pathlib import Path
 import requests
 from app.models.User import User
 
 
 @pytest.fixture(scope="module")
 def fill_test_data(app_url):
-    with open("users.json") as f:
+    data_path = Path(__file__).resolve().parent.parent / "users.json"
+
+    with data_path.open(encoding="utf-8") as f:
         test_data_users = json.load(f)
+
     api_users = []
     for user in test_data_users:
         response = requests.post(f"{app_url}/api/users/", json=user)
