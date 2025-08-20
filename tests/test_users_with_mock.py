@@ -34,6 +34,14 @@ def users(app_url):
     return response.json()
 
 
+@pytest.fixture
+def new_user_data():
+    data_path = Path(__file__).resolve().parent.parent / "users.json"
+    with data_path.open(encoding="utf-8") as f:
+        users = json.load(f)
+    return users[0]
+
+
 @pytest.mark.usefixtures("fill_test_data")
 def test_users(app_url):
     response = requests.get(f"{app_url}/api/users/")
@@ -68,3 +76,43 @@ def test_user_nonexistent_values(app_url, user_id):
 def test_user_invalid_values(app_url, user_id):
     response = requests.get(f"{app_url}/api/users/{user_id}")
     assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+
+
+#  post
+def test_create_user(app_url, new_user_data):
+    response = requests.post(f"{app_url}/api/users/", json=new_user_data)
+    assert response.status_code == HTTPStatus.CREATED
+
+    user = response.json()
+    User.model_validate(user)
+
+    requests.delete(f"{app_url}/api/users/{user['id']}")
+
+
+# delete
+def test_delete_user(app_url, new_user_data):
+    create_response = requests.post(f"{app_url}/api/users/", json=new_user_data)
+    assert create_response.status_code == HTTPStatus.CREATED
+    user = create_response.json()
+
+    delete_response = requests.delete(f"{app_url}/api/users/{user['id']}")
+    assert delete_response.status_code == HTTPStatus.OK
+
+    get_response = requests.get(f"{app_url}/api/users/{user['id']}")
+    assert get_response.status_code == HTTPStatus.NOT_FOUND
+
+
+# patch
+def test_patch_user(app_url, new_user_data):
+    create_response = requests.post(f"{app_url}/api/users/", json=new_user_data)
+    assert create_response.status_code == HTTPStatus.CREATED
+    user = create_response.json()
+
+    updated_data = {"first_name": "Updated Name"}
+    patch_response = requests.patch(f"{app_url}/api/users/{user['id']}", json=updated_data)
+    assert patch_response.status_code == HTTPStatus.OK
+
+    updated_user = patch_response.json()
+    assert updated_user["first_name"] == updated_data["first_name"]
+
+    requests.delete(f"{app_url}/api/users/{user['id']}")
