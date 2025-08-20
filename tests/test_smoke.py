@@ -8,8 +8,7 @@ def test_status_endpoint(app_url):
     assert response.status_code == HTTPStatus.OK
     body = response.json()
 
-    assert "users" in body
-    assert isinstance(body["users"], bool)
+    assert {'database': True} == body
 
 
 def test_smoke_get_users(app_url):
