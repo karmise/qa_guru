@@ -2,12 +2,14 @@ import logging
 from contextlib import asynccontextmanager
 
 import dotenv
+
 dotenv.load_dotenv()
+
 
 import uvicorn
 from fastapi import FastAPI
 
-from app.routers import users, status
+from app.routers import status, users
 from app.database.engine import create_db_and_tables
 
 
